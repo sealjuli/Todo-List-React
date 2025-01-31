@@ -74,12 +74,12 @@ const Tasks = ({ tasks, setTasks, logging }) => {
             </span>
             <img
               className="icon"
-              src="/update.png"
+              src="update.png"
               onClick={() => onClickUpdate(task.key, task.value)}
             ></img>
             <img
               className="icon"
-              src="/basket.png"
+              src="basket.png"
               onClick={() => onClickDelete(task.key)}
             ></img>
           </>
