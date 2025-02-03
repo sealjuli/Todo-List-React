@@ -11,7 +11,6 @@ export const Task = React.memo(
     inputValue,
     onChangeInput,
   }) => {
-    console.log("Task");
 
     return (
       <div
