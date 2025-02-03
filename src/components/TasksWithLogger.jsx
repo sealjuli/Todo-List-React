@@ -1,6 +1,4 @@
-import Tasks from "./Tasks";
-import withLogger from "./withLogger";
+import { Tasks } from "./Tasks";
+import { withLogger } from "./withLogger";
 
-const TasksWithLogger = withLogger(Tasks);
-
-export default TasksWithLogger;
+export const TasksWithLogger = withLogger(Tasks);

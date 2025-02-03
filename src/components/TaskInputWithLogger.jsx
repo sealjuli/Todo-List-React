@@ -1,6 +1,4 @@
-import TaskInput from "./TaskInput";
-import withLogger from "./withLogger";
+import { TaskInput } from "./TaskInput";
+import { withLogger } from "./withLogger";
 
-const TaskInputWithLogger = withLogger(TaskInput);
-
-export default TaskInputWithLogger;
+export const TaskInputWithLogger = withLogger(TaskInput);

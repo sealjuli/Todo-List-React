@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-const TaskInput = ({ setTasks, logging }) => {
+export const TaskInput = ({ setTasks, logging }) => {
   const [value, setValue] = useState("");
 
   const onClick = () => {
     if (value) {
-      const uuid = uuidv4();
+      const uuid = crypto.randomUUID();
       setTasks((tasks) => [
         ...tasks,
         { value, key: uuid, isUpdating: false, isDone: false },
@@ -40,5 +39,3 @@ const TaskInput = ({ setTasks, logging }) => {
     </div>
   );
 };
-
-export default TaskInput;

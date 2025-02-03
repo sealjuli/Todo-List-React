@@ -1,6 +1,4 @@
-import { useState } from "react";
-
-const withLogger = (Component) => {
+export const withLogger = (Component) => {
   return (props) => {
     const logging = (action, task) => {
       console.log(`${action}:`, task);
@@ -9,5 +7,3 @@ const withLogger = (Component) => {
     return <Component {...props} logging={logging} />;
   };
 };
-
-export default withLogger;

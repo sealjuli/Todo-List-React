@@ -1,27 +1,26 @@
 import { useState } from "react";
 import "../App.css";
 
-const Tasks = ({ tasks, setTasks, logging }) => {
+export const Tasks = ({ tasks, setTasks, logging }) => {
   const [inputValue, setInputValue] = useState("");
 
   const onClickDelete = (key) => {
-    const deletedTask = tasks.splice(
-      tasks.findIndex((val) => val.key === key),
-      1
-    );
-    setTasks([...tasks]);
-    logging("Удалили таску", deletedTask[0]);
+    const deleteTask = tasks.find((task) => task.key === key);
+    setTasks(tasks.filter((task) => task.key != key));
+    logging("Удалили таску", deleteTask);
   };
 
   const onClickUpdate = (key, value) => {
     setTasks((tasks) =>
-      tasks.map((val) =>
-        val.isUpdating === true ? { ...val, isUpdating: false } : val
+      tasks.map((task) =>
+        task.isUpdating === true ? { ...task, isUpdating: false } : task
       )
     );
     setInputValue(value);
     setTasks((tasks) =>
-      tasks.map((val) => (val.key === key ? { ...val, isUpdating: true } : val))
+      tasks.map((task) =>
+        task.key === key ? { ...task, isUpdating: true } : task
+      )
     );
   };
 
@@ -31,27 +30,32 @@ const Tasks = ({ tasks, setTasks, logging }) => {
 
   const updateTask = (key) => {
     setTasks((tasks) =>
-      tasks.map((val) =>
-        val.key === key ? { ...val, value: inputValue, isUpdating: false } : val
+      tasks.map((task) =>
+        task.key === key
+          ? { ...task, value: inputValue, isUpdating: false }
+          : task
       )
     );
     logging(
       "Обновили таску",
-      tasks.find((val) => val.key === key)
+      tasks.find((task) => task.key === key)
     );
   };
 
   const taskOnClick = (key) => {
     setTasks((tasks) =>
-      tasks.map((val) =>
-        val.key === key ? { ...val, isDone: !val.isDone } : val
+      tasks.map((task) =>
+        task.key === key ? { ...task, isDone: !task.isDone } : task
       )
     );
   };
 
   const divTasks = tasks.map((task) => {
     return (
-      <div key={task.key} className={task.isUpdating ? "task isUpdating" : "task"}>
+      <div
+        key={task.key}
+        className={task.isUpdating ? "task isUpdating" : "task"}
+      >
         {task.isUpdating ? (
           <>
             <input
@@ -90,5 +94,3 @@ const Tasks = ({ tasks, setTasks, logging }) => {
 
   return <div>{divTasks}</div>;
 };
-
-export default Tasks;
