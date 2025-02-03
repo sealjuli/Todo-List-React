@@ -11,12 +11,7 @@ export const TaskInput = ({ setTasks, logging }) => {
         { value, key: uuid, isUpdating: false, isDone: false },
       ]);
       setValue("");
-      logging("Добавили таску", {
-        value,
-        key: uuid,
-        isUpdating: false,
-        isDone: false,
-      });
+      logging("Добавили таску", value);
     }
   };
 
