@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { TaskInputWithLogger } from "./TaskInputWithLogger";
-import { TasksWithLogger } from "./TasksWithLogger";
+import React, { useState, useCallback } from "react";
+import { TaskInputWithLogger } from "./TaskInput";
+import { TasksWithLogger } from "./Tasks";
 import "../App.css";
 
 export function Todo() {

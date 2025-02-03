@@ -1,22 +1,27 @@
 import { useState } from "react";
+import { withLogger } from "./withLogger";
 
-export const TaskInput = ({ setTasks, logging }) => {
+const TaskInput = ({ setTasks, logging }) => {
   const [value, setValue] = useState("");
 
-  const onClick = () => {
-    if (value) {
-      const uuid = crypto.randomUUID();
-      setTasks((tasks) => [
-        ...tasks,
-        { value, key: uuid, isUpdating: false, isDone: false },
-      ]);
-      setValue("");
-      logging("Добавили таску", value);
-    }
+  const onAddTask = () => {
+    if (!value) return;
+
+    const uuid = crypto.randomUUID();
+    setTasks((tasks) => [
+      ...tasks,
+      { value, id: uuid, isUpdating: false, isDone: false },
+    ]);
+    setValue("");
+    logging("Добавили таску", value);
   };
 
-  const onChange = (e) => {
+  const onAddTaskHandle = (e) => {
     setValue(e.target.value);
+  };
+
+  const onEnterAddTask = (event) => {
+    if (event.key === "Enter") return onAddTask();
   };
 
   return (
@@ -24,13 +29,13 @@ export const TaskInput = ({ setTasks, logging }) => {
       <h2>{"Get things done!"}</h2>
       <input
         placeholder="What is the task today?"
-        onChange={onChange}
+        onChange={onAddTaskHandle}
         value={value}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") return onClick();
-        }}
+        onKeyDown={(e) => onEnterAddTask(e)}
       />
-      <button onClick={onClick}>{"Add task"}</button>
+      <button onClick={onAddTask}>{"Add task"}</button>
     </div>
   );
 };
+
+export const TaskInputWithLogger = withLogger(TaskInput);
