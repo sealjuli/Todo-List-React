@@ -1,16 +1,55 @@
-import React, { useState, useCallback } from "react";
-import { TaskInputWithLogger } from "./TaskInput";
-import { TasksWithLogger } from "./Tasks";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { TaskInput } from "./TaskInput";
+import { Tasks } from "./Tasks";
 import "../App.css";
 
 export function Todo() {
   const [tasks, setTasks] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch(
+          "https://todo-redev.herokuapp.com/api/todos",
+          {
+            method: "GET",
+            headers: {
+              accept: "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+
+        if (!response.ok) {
+          console.log(`Ошибка HTTP: ${response.status}`);
+          throw new Error(`Ошибка HTTP: ${response.status}`);
+        }
+
+        const json = await response.json();
+        json.map((task) => (task.isUpdating = false));
+        setTasks(json);
+      } catch (error) {
+        console.error("Ошибка при получении задач:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  const onClickLogout = () => {
+    navigate("/Todo-List-React/login");
+    localStorage.removeItem("token");
+  };
 
   return (
     <div>
-      <TaskInputWithLogger setTasks={setTasks}></TaskInputWithLogger>
-      <TasksWithLogger tasks={tasks} setTasks={setTasks}></TasksWithLogger>
-      <p className="logout">"Log out"</p>
+      <TaskInput setTasks={setTasks}></TaskInput>
+      <Tasks tasks={tasks} setTasks={setTasks}></Tasks>
+      <p className="logout" onClick={onClickLogout}>
+        "Log out"
+      </p>
     </div>
   );
 }

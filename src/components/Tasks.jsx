@@ -1,20 +1,32 @@
 import { useCallback, useState } from "react";
 import { Task } from "./Task";
-import { withLogger } from "./withLogger";
 
-const Tasks = ({ tasks, setTasks, logging }) => {
+export const Tasks = ({ tasks, setTasks }) => {
   const [inputValue, setInputValue] = useState("");
 
   const onChangeInput = useCallback((event) => {
     setInputValue(event.target.value);
   }, []);
 
-  const onClickDelete = useCallback(({ id, value }) => {
-    setTasks((tasks) => tasks.filter((task) => task.id != id));
-    logging("Удалили таску", value);
+  const onClickDelete = useCallback(async ({ id }) => {
+    const response = await fetch(
+      `https://todo-redev.herokuapp.com/api/todos/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    );
+
+    if (response.ok) {
+      setTasks((tasks) => tasks.filter((task) => task.id != id));
+    } else {
+      console.log("Ошибка HTTP: " + response.status);
+    }
   }, []);
 
-  const onClickUpdate = useCallback(({ id, value }) => {
+  const onClickUpdate = useCallback(({ id, title }) => {
     setTasks((tasks) =>
       tasks.map((task) => {
         if (task.isUpdating) {
@@ -26,31 +38,59 @@ const Tasks = ({ tasks, setTasks, logging }) => {
         }
       })
     );
-    setInputValue(value);
+    setInputValue(title);
   }, []);
 
   const onUpdateTask = useCallback(
-    ({ id, value }) => {
-      setTasks((tasks) =>
-        tasks.map((task) =>
-          task.id === id
-            ? { ...task, value: inputValue, isUpdating: false }
-            : task
-        )
+    async ({ id }) => {
+      const response = await fetch(
+        `https://todo-redev.herokuapp.com/api/todos/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: JSON.stringify({ title: inputValue }),
+        }
       );
-      logging("Обновили таску", value);
+
+      if (response.ok) {
+        setTasks((tasks) =>
+          tasks.map((task) =>
+            task.id === id
+              ? { ...task, title: inputValue, isUpdating: false }
+              : task
+          )
+        );
+      } else {
+        console.log("Ошибка HTTP: " + response.status);
+      }
     },
     [inputValue]
   );
 
-  const onDoneTask = useCallback(({ id, value }) => {
-    setTasks((tasks) =>
-      tasks.map((task) =>
-        task.id === id ? { ...task, isDone: !task.isDone } : task
-      )
+  const onDoneTask = useCallback(async ({ id }) => {
+    const response = await fetch(
+      `https://todo-redev.herokuapp.com/api/todos/${id}/isCompleted`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
     );
 
-    logging("Нажатие на таску", value);
+    if (response.ok) {
+      setTasks((tasks) =>
+        tasks.map((task) =>
+          task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
+        )
+      );
+    } else {
+      console.log("Ошибка HTTP: " + response.status);
+    }
   }, []);
 
   return (
@@ -70,5 +110,3 @@ const Tasks = ({ tasks, setTasks, logging }) => {
     </div>
   );
 };
-
-export const TasksWithLogger = withLogger(Tasks);

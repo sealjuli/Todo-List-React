@@ -43,7 +43,7 @@
 
 .done {
   text-decoration: line-through;
-  color:lightsteelblue;
+  color: lightsteelblue;
 }
 
 #root {
@@ -95,4 +95,63 @@ h2 {
 .taskSpan:hover,
 .logout:hover {
   cursor: pointer;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-group .label_register {
+  width: 100px;
+  text-align: left;
+}
+
+.form-group input:not(.gender_input) {
+  width: 180px;
+}
+
+.form-group .gender {
+  width: 140px;
+  text-align: left;
+}
+
+.form-group.login {
+  flex-direction: column;
+}
+
+.modal {
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+.modal.active {
+  opacity: 1;
+  pointer-events: all;
+  color: rgb(184, 32, 32);
+}
+
+.modal__context {
+  padding: 20px;
+  border-radius: 12px;
+  background-color: white;
+  width: 70vw;
 }

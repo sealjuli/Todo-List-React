@@ -11,6 +11,9 @@ export const Task = React.memo(
     inputValue,
     onChangeInput,
   }) => {
+    const inputOnKeyDown = (event) => {
+      if (event.key === "Enter") return onUpdateTask(task);
+    };
 
     return (
       <div
@@ -22,9 +25,7 @@ export const Task = React.memo(
             <input
               autoFocus
               onChange={onChangeInput}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") return onUpdateTask(task);
-              }}
+              onKeyDown={(e) => inputOnKeyDown(e)}
               value={inputValue}
             />
             <button onClick={() => onUpdateTask(task)}>{"Update"}</button>
@@ -33,9 +34,9 @@ export const Task = React.memo(
           <>
             <span
               onClick={() => onDoneTask(task)}
-              className={task.isDone ? "taskSpan done" : "taskSpan"}
+              className={task.isCompleted ? "taskSpan done" : "taskSpan"}
             >
-              {task.value}
+              {task.title}
             </span>
             <img
               className="icon"

@@ -1,23 +1,35 @@
 import { useState } from "react";
-import { withLogger } from "./withLogger";
 
-const TaskInput = ({ setTasks, logging }) => {
+export const TaskInput = ({ setTasks }) => {
   const [value, setValue] = useState("");
 
-  const onAddTask = () => {
+  const onAddTask = async () => {
     if (!value) return;
+    const response = await fetch("https://todo-redev.herokuapp.com/api/todos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify({ title: value }),
+    });
 
-    const uuid = crypto.randomUUID();
-    setTasks((tasks) => [
-      ...tasks,
-      { value, id: uuid, isUpdating: false, isDone: false },
-    ]);
+    if (response.ok) {
+      const json = await response.json();
+      json.isUpdating = false;
+      setTasks((tasks) => [...tasks, json]);
+    } else if (response.status === 400) {
+      console.log(await response.json());
+    } else {
+      console.log("Ошибка HTTP: " + response.status);
+    }
+
     setValue("");
-    logging("Добавили таску", value);
   };
 
-  const onAddTaskHandle = (e) => {
-    setValue(e.target.value);
+  const onAddTaskHandle = (event) => {
+    setValue(event.target.value);
   };
 
   const onEnterAddTask = (event) => {
@@ -31,11 +43,9 @@ const TaskInput = ({ setTasks, logging }) => {
         placeholder="What is the task today?"
         onChange={onAddTaskHandle}
         value={value}
-        onKeyDown={(e) => onEnterAddTask(e)}
+        onKeyDown={(event) => onEnterAddTask(event)}
       />
       <button onClick={onAddTask}>{"Add task"}</button>
     </div>
   );
 };
-
-export const TaskInputWithLogger = withLogger(TaskInput);
