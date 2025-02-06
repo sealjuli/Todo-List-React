@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { ModalWindow } from "./ModalWindow";
+import { RoutesClass } from "../helpers/Routes";
 import "../App.css";
 
 export function RegisterPage() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [errText, setErrText] = useState(false);
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const {
     register,
@@ -17,7 +19,7 @@ export function RegisterPage() {
 
   const onSubmit = async (data) => {
     const response = await fetch(
-      "https://todo-redev.herokuapp.com/api/users/register",
+      `${import.meta.env.VITE_API_URL}users/register`,
       {
         method: "POST",
         headers: {
@@ -29,20 +31,21 @@ export function RegisterPage() {
     );
 
     if (response.ok) {
-      const json = await response.json();
-      // пользователь зарегистрирован, залогиньтесь
-      navigate("/Todo-List-React/login");
+      setShowModal(true);
+      setMessage("Пользователь успешно зарегистрирован. Залогиньтесь");
+      setSuccess(true);
     } else if (response.status === 400) {
       const resp = await response.json();
       setShowModal(true);
-      setErrText(resp.message);
+      setMessage(resp.message);
+      setSuccess(false);
     } else {
       console.log("Ошибка HTTP: " + response.status);
     }
   };
 
-  const onClickLogout = () => {
-    navigate("/Todo-List-React/login");
+  const navigateToLogin = () => {
+    navigate(`${RoutesClass.root}${RoutesClass.login}`);
   };
 
   return (
@@ -125,10 +128,12 @@ export function RegisterPage() {
       <ModalWindow
         showModal={showModal}
         setShowModal={setShowModal}
-        text={errText}
+        text={message}
+        success={success}
+        navigate={navigateToLogin}
       />
 
-      <p className="logout" onClick={onClickLogout}>
+      <p className="logout" onClick={navigateToLogin}>
         "Already have an account? Log in"
       </p>
     </div>

@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { RoutesClass } from "../helpers/Routes";
 import { Task } from "./Task";
 
 export const Tasks = ({ tasks, setTasks }) => {
@@ -10,7 +11,7 @@ export const Tasks = ({ tasks, setTasks }) => {
 
   const onClickDelete = useCallback(async ({ id }) => {
     const response = await fetch(
-      `https://todo-redev.herokuapp.com/api/todos/${id}`,
+      `${import.meta.env.VITE_API_URL}${RoutesClass.todos}/${id}`,
       {
         method: "DELETE",
         headers: {
@@ -44,7 +45,7 @@ export const Tasks = ({ tasks, setTasks }) => {
   const onUpdateTask = useCallback(
     async ({ id }) => {
       const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/todos/${id}`,
+        `${import.meta.env.VITE_API_URL}${RoutesClass.todos}/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -73,7 +74,7 @@ export const Tasks = ({ tasks, setTasks }) => {
 
   const onDoneTask = useCallback(async ({ id }) => {
     const response = await fetch(
-      `https://todo-redev.herokuapp.com/api/todos/${id}/isCompleted`,
+      `${import.meta.env.VITE_API_URL}${RoutesClass.todos}/${id}/isCompleted`,
       {
         method: "PATCH",
         headers: {

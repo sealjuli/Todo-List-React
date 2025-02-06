@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { TaskInput } from "./TaskInput";
 import { Tasks } from "./Tasks";
+import { RoutesClass } from "../helpers/Routes";
 import "../App.css";
 
 export function Todo() {
@@ -12,7 +13,7 @@ export function Todo() {
     const fetchTasks = async () => {
       try {
         const response = await fetch(
-          "https://todo-redev.herokuapp.com/api/todos",
+          `${import.meta.env.VITE_API_URL}${RoutesClass.todos}`,
           {
             method: "GET",
             headers: {
@@ -39,7 +40,7 @@ export function Todo() {
   }, []);
 
   const onClickLogout = () => {
-    navigate("/Todo-List-React/login");
+    navigate(`${RoutesClass.root}${RoutesClass.login}`);
     localStorage.removeItem("token");
   };
 

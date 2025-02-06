@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { RoutesClass } from "../helpers/Routes";
 
 export const TaskInput = ({ setTasks }) => {
   const [value, setValue] = useState("");
 
   const onAddTask = async () => {
     if (!value) return;
-    const response = await fetch("https://todo-redev.herokuapp.com/api/todos", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}${RoutesClass.todos}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

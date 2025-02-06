@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { ModalWindow } from "./ModalWindow";
+import { RoutesClass } from "../helpers/Routes";
 import "../App.css";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [errText, setErrText] = useState(false);
+  const [errText, setErrText] = useState('');
 
   const {
     register,
@@ -17,7 +18,7 @@ export function LoginPage() {
 
   const onSubmit = async (data) => {
     const response = await fetch(
-      "https://todo-redev.herokuapp.com/api/auth/login",
+      `${import.meta.env.VITE_API_URL}auth/login`,
       {
         method: "POST",
         headers: {
@@ -32,7 +33,7 @@ export function LoginPage() {
       const json = await response.json();
       // пользователь залогинен
       localStorage.setItem("token", json.token);
-      navigate("/Todo-List-React/todo");
+      navigate(`${RoutesClass.root}${RoutesClass.todos}`);
     } else if (response.status === 400) {
       const resp = await response.json();
       setShowModal(true);
@@ -43,7 +44,7 @@ export function LoginPage() {
   };
 
   const onClickLogout = () => {
-    navigate("/Todo-List-React/register");
+    navigate(`${RoutesClass.root}${RoutesClass.register}`);
   };
 
   return (
