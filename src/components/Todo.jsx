@@ -29,7 +29,6 @@ export function Todo() {
         }
 
         const json = await response.json();
-        json.map((task) => (task.isUpdating = false));
         setTasks(json);
       } catch (error) {
         console.error("Ошибка при получении задач:", error);
